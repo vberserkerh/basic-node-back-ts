@@ -2,6 +2,6 @@
 import { User } from "../../domain/entities/user.entity";
 
 export interface UserRepository {
-  create(user: User): Promise<User>;
+  create(user: User): Promise<{ status: number, message?: string, user?: User }>;
   findAll(): Promise<User[]>;
 }
