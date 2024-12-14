@@ -14,21 +14,24 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String   // Senha encriptada
-  username  String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  levelId   Int
-  level     Level    @relation(fields: [levelId], references: [id]) // Relacionamento com Level
+  id          String        @id @default(uuid()) // Alterado para UUID
+  email       String        @unique
+  password    String        // Senha encriptada
+  username    String        @unique
+  name        String
+  createdAt   DateTime      @default(now())
+  levelId     String        // Alterado para UUID
+  level       Level         @relation(fields: [levelId], references: [value]) // Relacionamento com Level
+  phone       String?       // Número de telefone opcional
+  taxId       String?       // CPF ou CNPJ
+  address     String?       // Endereço completo
 }
 
 model Level {
-  id       Int      @id @default(autoincrement())
-  value    Int      @unique   // Valor inteiro representando o nível
+  id       String   @id @default(uuid()) // Alterado para UUID
+  value    String      @unique   // Valor inteiro representando o nível
   category String   @unique   // Nome da categoria (ex: "Administrador", "Usuário Comum")
   users    User[]   // Relacionamento inverso com User
 }
 
-//npc prisma migrate dev --name init
+//npx prisma migrate dev --name init
