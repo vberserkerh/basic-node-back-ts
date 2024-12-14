@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:16  # Usando uma imagem do Node.js (pode ser ajustada conforme a versão desejada)
+    container_name: node-app
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app  # Monta o diretório atual (onde está o Dockerfile e o código) no container
+    ports:
+      - "3000:3000"  # Expõe a porta 3000 do container para a máquina host (ajuste conforme necessário)
+    command: >
+      bash -c "npm install && npm run seed && npx prisma migrate dev --name init && npm start"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=mysql://root:password@db:3306/mydb  # Ajuste a URL do banco de dados conforme seu setup
+    depends_on:
+      - db  # Garante que o serviço db (MySQL) inicie antes do app
+
+  db:
+    image: mysql:8  # Usando a imagem oficial do MySQL
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password  # Defina a senha para o root
+      MYSQL_DATABASE: mydb  # O nome do banco de dados que o Prisma vai usar
+      MYSQL_USER: user  # Usuário padrão do banco
+      MYSQL_PASSWORD: password  # Senha do usuário
+    volumes:
+      - mysql_data:/var/lib/mysql  # Volume para persistir os dados do MySQL
+    ports:
+      - "3306:3306"  # Expõe a porta 3306 do MySQL do container para a máquina host
+
+volumes:
+  mysql_data:  # Volume para persistência dos dados
