@@ -4,7 +4,7 @@ import { User } from "../../domain/entities/user.entity";
 import { prisma } from "../database/prisma-client";
 
 export class PrismaUserRepository implements UserRepository {
-  
+
   // Método para criar um usuário
   async create(user: User): Promise<{ status: number, message?: string, user?: User }> {
     try {
@@ -31,6 +31,7 @@ export class PrismaUserRepository implements UserRepository {
 
       const createdUser = await prisma.user.create({
         data: {
+          id: user.id as string,
           email: user.email,
           username: user.username,
           name: user.name,
@@ -39,8 +40,8 @@ export class PrismaUserRepository implements UserRepository {
         },
       });
 
-      return { 
-        status: 201, 
+      return {
+        status: 201,
         user: new User(
           createdUser.id,
           createdUser.email,
@@ -60,11 +61,30 @@ export class PrismaUserRepository implements UserRepository {
     try {
       const users = await prisma.user.findMany();
       return users.map(
-        (user) =>
+        (user: { id: string | null; email: string; username: string; name: string; password: string; levelId: string; }) =>
           new User(user.id, user.email, user.username, user.name, user.password, user.levelId)
       );
     } catch (error) {
       throw new Error('Erro ao buscar os usuários');
     }
   }
+
+  async update(id: string, updatedData: any): Promise<{ status: number | undefined, message?: string | undefined, user?: User | undefined}> {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updatedData,
+    });
+
+    return {
+    status: 201,
+    user: new User(
+      updatedUser.id,
+      updatedUser.email,
+      updatedUser.username,
+      updatedUser.name,
+      updatedUser.password,
+      updatedUser.levelId
+    )};
+  }
+
 }

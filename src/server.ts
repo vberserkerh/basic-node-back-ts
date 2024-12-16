@@ -1,14 +1,3 @@
-// import app from "./main/app";
-
-// const PORT = process.env.PORT || 3000;
-
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
-
-
-// src/main/server.ts
-import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./infrastructure/web/routes/user.routes";
 
